@@ -1,0 +1,33 @@
+[package]
+name = "z3r-sramr-py"
+version = "0.1.0"
+authors = ["cassidoxa <cassidymoen@gmx.com>"]
+edition = "2018"
+readme = "README.md"
+keywords= ["zelda", "randomizer", "sram", "alttp", "snes]
+license = "MIT"
+
+[lib]
+name = "z3rsramr"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.8.5"
+z3r-sramr = { path = "../lib" }
+
+[features]
+extension-module = ["pyo3/extension-module"]
+default = ["extension-module"]
+
+[package.metadata.maturin]
+classifier = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Rust",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+    "License :: OSI Approved :: MIT License",
+    ]
