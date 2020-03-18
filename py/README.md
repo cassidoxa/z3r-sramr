@@ -1,5 +1,9 @@
 # z3r-sramr
 
+# Installation
+
+`pip install z3r-sramr-py`
+
 # Functions
 
 `parse_sram(sram, validate_sram=true)`
