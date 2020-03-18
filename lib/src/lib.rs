@@ -25,7 +25,7 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     let total = get_stat(&mut cur, 0x423, 8, 0, Some(216))?;
     let chests = get_stat(&mut cur, 0x442, 8, 0, None)?;
     sram_info.insert("current rupees", get_stat(&mut cur, 0x362, 16, 0, None)?.repr);
-    sram_info.insert("collection_rate", total.repr);
+    sram_info.insert("collection rate", total.repr);
     sram_info.insert("chest locations", chests.repr);
     sram_info.insert("other locations", (total.val - chests.val).to_string());
     sram_info.insert("y items", get_stat(&mut cur, 0x421, 5, 3, Some(27))?.repr);

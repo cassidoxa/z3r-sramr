@@ -4,7 +4,8 @@ version = "0.1.0"
 authors = ["cassidoxa <cassidymoen@gmx.com>"]
 edition = "2018"
 readme = "README.md"
-keywords= ["zelda", "randomizer", "sram", "alttp", "snes]
+repository = "https://github.com/cassidoxa/z3r-sramr"
+keywords= ["zelda", "randomizer", "sram", "alttp", "snes"]
 license = "MIT"
 
 [lib]

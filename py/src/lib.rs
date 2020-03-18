@@ -9,6 +9,7 @@ use z3r_sramr;
 fn z3rsramr(py: Python, m: &PyModule) -> PyResult<()> {
     m.add("ParseException", py.get_type::<ParseException>())?;
     m.add_wrapped(wrap_pyfunction!(parse_sram)).unwrap();
+    m.add_wrapped(wrap_pyfunction!(validate_sram)).unwrap();
 
     Ok(())
 }
@@ -20,4 +21,13 @@ fn parse_sram(sram: &[u8], validate_sram: bool) -> Result<HashMap<&str, String>,
         Err(e) => Err(ParseException::py_err(format!("{}", e))),
     }
 }
+
+#[pyfunction(attr_name = "parse_sram", validate_sram = true)]
+fn validate_sram(sram: &[u8]) -> bool {
+    match z3r_sramr::validate_sram(sram) {
+        Ok(()) => true,
+        Err(_) => false,
+    }
+}
+
 create_exception!(z3rsramr, ParseException, pyo3::exceptions::Exception);
