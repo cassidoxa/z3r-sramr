@@ -22,7 +22,7 @@ fn parse_sram(sram: &[u8], validate_sram: bool) -> Result<HashMap<&str, String>,
     }
 }
 
-#[pyfunction(attr_name = "parse_sram", validate_sram = true)]
+#[pyfunction(attr_name = "validate_sram")]
 fn validate_sram(sram: &[u8]) -> bool {
     match z3r_sramr::validate_sram(sram) {
         Ok(()) => true,
