@@ -20,8 +20,19 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     let mut cur = Cursor::new(sram);
     let mut sram_info: HashMap<&str, String> = HashMap::with_capacity(58);
 
+    let hash_id: Option<String> = get_hash_id(&sram);
+    match hash_id {
+        Some(id) => {
+                     sram_info.insert("hash id", id.clone());
+                     sram_info.insert("permalink", format!("https://alttpr.com/h/{}", id));
+                    },
+        None => {
+                    
+                    sram_info.insert("hash id", "none".to_string());
+                    sram_info.insert("permalink", "none".to_string());
+        },
+    };
     sram_info.insert("filename", z3rfile_to_unicode(&sram)?);
-    sram_info.insert("permalink", get_permalink(&sram));
     let total = get_stat(&mut cur, 0x423, 8, 0, Some(216))?;
     let chests = get_stat(&mut cur, 0x442, 8, 0, None)?;
     sram_info.insert("current rupees", get_stat(&mut cur, 0x362, 16, 0, None)?.repr);
@@ -223,13 +234,13 @@ fn z3rfile_to_unicode(sram: &[u8]) -> Result<String> {
     Ok(file_name)
 }
 
-fn get_permalink(sram: &[u8]) -> String {
+fn get_hash_id(sram: &[u8]) -> Option<String> {
     let rom_name = &sram[0x2000..0x2002];
     match from_utf8(&rom_name).unwrap() {
         "VT" => {
             let hash_id = from_utf8(&sram[0x2003..0x200D]).unwrap();
-            return format!("https://alttpr.com/h/{}", hash_id);
+            return Some(hash_id.to_string());
         }
-        _ => return "none".to_string(),
+        _ => return None,
     };
 }
