@@ -4,7 +4,8 @@ version = "0.1.1"
 authors = ["cassidoxa <cassidymoen@gmx.com>"]
 edition = "2018"
 readme = "README.md"
-repository = "https://github.com/cassidoxa/RandoRank"
+description = "An SRAM validator and parser for A Link to the Past Randomizer ROMs"
+repository = "https://github.com/cassidoxa/z3r-sramr"
 keywords= ["zelda", "randomizer", "sram", "alttp", "snes"]
 license = "MIT"
 
