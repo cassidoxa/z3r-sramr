@@ -15,6 +15,15 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     let mut cur = Cursor::new(sram);
     let mut sram_info: HashMap<&str, String> = HashMap::with_capacity(58);
 
+    let magic_map = |m: u32| -> String {
+        match m {
+            0 => "normal magic".to_string(),
+            1 => "1/2 magic".to_string(),
+            2 => "1/4 magic".to_string(),
+            _ => "unknown magic".to_string(),
+        }
+    };
+    
     let hash_id: Option<String> = get_hash_id(&sram);
     match hash_id {
         Some(id) => {
@@ -31,6 +40,8 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     let total = get_stat(&mut cur, 0x423, 8, 0, Some(216))?;
     let chests = get_stat(&mut cur, 0x442, 8, 0, None)?;
     sram_info.insert("current rupees", get_stat(&mut cur, 0x362, 16, 0, None)?.repr);
+    sram_info.insert("current arrows", get_stat(&mut cur, 0x377, 8, 0, None)?.repr);
+    sram_info.insert("current bombs", get_stat(&mut cur, 0x343, 8, 0, None)?.repr);
     sram_info.insert("collection rate", total.repr);
     sram_info.insert("chest locations", chests.repr);
     sram_info.insert("other locations", (total.value - chests.value).to_string());
@@ -89,6 +100,7 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     sram_info.insert("flute found", Z3RStat::new_time(Some(&mut cur), 0x460u64).repr);
     sram_info.insert("mirror found", Z3RStat::new_time(Some(&mut cur), 0x464u64).repr);
     sram_info.insert("faerie revivals", get_stat(&mut cur, 0x453, 8, 0, None)?.repr);
+    sram_info.insert("magic", magic_map(get_stat(&mut cur, 0x37B, 8, 0, None)?.value));
 
     Ok(sram_info)
 }

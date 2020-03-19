@@ -1,6 +1,10 @@
 MISC
+"current arrows"
+"current bombs"
 "current rupees"
 "filename"
+"hash id"
+"magic"
 "permalink"
 
 LOCATIONS CHECKED
