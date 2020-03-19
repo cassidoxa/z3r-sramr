@@ -3,12 +3,7 @@ use byteorder::{ByteOrder, LittleEndian, ReadBytesExt};
 use std::{collections::HashMap, io::Cursor, str::from_utf8};
 
 struct Z3RStat {
-    val: u32,
-    repr: String,
-}
-
-struct Z3RTime {
-    val: u32,
+    value: u32,
     repr: String,
 }
 
@@ -38,7 +33,7 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     sram_info.insert("current rupees", get_stat(&mut cur, 0x362, 16, 0, None)?.repr);
     sram_info.insert("collection rate", total.repr);
     sram_info.insert("chest locations", chests.repr);
-    sram_info.insert("other locations", (total.val - chests.val).to_string());
+    sram_info.insert("other locations", (total.value - chests.value).to_string());
     sram_info.insert("y items", get_stat(&mut cur, 0x421, 5, 3, Some(27))?.repr);
     sram_info.insert("a items", get_stat(&mut cur, 0x421, 3, 0, Some(5))?.repr);
     sram_info.insert("swords", get_stat(&mut cur, 0x422, 3, 5, Some(4))?.repr);
@@ -83,16 +78,16 @@ pub fn parse_sram(sram: &[u8], validate: bool) -> Result<HashMap<&str, String>> 
     sram_info.insert("rupees spent", get_stat(&mut cur, 0x42B, 16, 0, None)?.repr);
     sram_info.insert("save and quits", get_stat(&mut cur, 0x42D, 8, 0, None)?.repr);
     sram_info.insert("deaths", get_stat(&mut cur, 0x449, 8, 0, None)?.repr);
-    let total_time = Z3RTime::new(&mut cur, 0x43E);
-    let menu_time = Z3RTime::new(&mut cur, 0x444);
-    let loop_time = Z3RTime::new(&mut cur, 0x42E);
+    let total_time = Z3RStat::new_time(Some(&mut cur), 0x43Eu64);
+    let menu_time = Z3RStat::new_time(Some(&mut cur), 0x444u64);
+    let loop_time = Z3RStat::new_time(Some(&mut cur), 0x42Eu64);
     sram_info.insert("total time", total_time.repr);
     sram_info.insert("menu time", menu_time.repr);
-    sram_info.insert("lag time", Z3RTime::from_frames(total_time.val - loop_time.val).repr);
-    sram_info.insert("first sword", Z3RTime::new(&mut cur, 0x458).repr);
-    sram_info.insert("boots found", Z3RTime::new(&mut cur, 0x45C).repr);
-    sram_info.insert("flute found", Z3RTime::new(&mut cur, 0x460).repr);
-    sram_info.insert("mirror found", Z3RTime::new(&mut cur, 0x464).repr);
+    sram_info.insert("lag time", Z3RStat::new_time(None, total_time.value - loop_time.value).repr);
+    sram_info.insert("first sword", Z3RStat::new_time(Some(&mut cur), 0x458u64).repr);
+    sram_info.insert("boots found", Z3RStat::new_time(Some(&mut cur), 0x45Cu64).repr);
+    sram_info.insert("flute found", Z3RStat::new_time(Some(&mut cur), 0x460u64).repr);
+    sram_info.insert("mirror found", Z3RStat::new_time(Some(&mut cur), 0x464u64).repr);
     sram_info.insert("faerie revivals", get_stat(&mut cur, 0x453, 8, 0, None)?.repr);
 
     Ok(sram_info)
@@ -151,29 +146,33 @@ fn get_stat(
 ) -> Result<Z3RStat> {
     cur.set_position(offset);
     let bytes: f32 = ((bits as f32 + shift as f32) / 8f32).ceil();
-    let mut val = match bytes as u8 {
+    let mut value = match bytes as u8 {
         1 => cur.read_u8().unwrap() as u32,
         2 => cur.read_u16::<LittleEndian>().unwrap() as u32,
-        _ => return Err(anyhow!("Error reading value: {}", offset)),
+        _ => return Err(anyhow!("Tried reading more than two bytes at {}", offset)),
     };
-    val >>= shift;
-    val &= bitmask(bits);
+    value >>= shift;
+    value &= bitmask(bits);
 
     let repr: String = match max {
-        Some(max) => format!("{}/{}", val, max),
-        None => val.to_string(),
+        Some(max) => format!("{}/{}", value, max),
+        None => value.to_string(),
     };
 
-    Ok(Z3RStat { val, repr })
+    Ok(Z3RStat { value, repr })
 }
 
-impl Z3RTime {
-    fn new(cur: &mut Cursor<&[u8]>, offset: u64) -> Self {
-        cur.set_position(offset);
-        // time is stored as number of frames, in a 32 bit integer
-        let val = cur.read_u32::<LittleEndian>().unwrap();
-        let hours: u32 = val / (216000u32);
-        let mut rem = val % 216000u32;
+impl Z3RStat {
+    fn new_time<T: Into<u64>>(cur: Option<&mut Cursor<&[u8]>>, num: T) -> Self {
+        let value: u32 = match cur {
+            Some(cur) => {
+                cur.set_position(num.into());
+                cur.read_u32::<LittleEndian>().unwrap()
+            }
+            None => num.into() as u32,
+        };
+        let hours: u32 = value / (216000u32);
+        let mut rem = value % 216000u32;
         let minutes: u32 = rem / 3600u32;
         rem %= 3600u32;
         let seconds: u32 = rem / 60u32;
@@ -181,21 +180,7 @@ impl Z3RTime {
 
         let repr = format!("{:0>2}:{:0>2}:{:0>2}.{:0>2}", hours, minutes, seconds, rem);
 
-        Z3RTime { val, repr }
-    }
-
-    fn from_frames(frames: u32) -> Self {
-        let val = frames;
-        let hours: u32 = val / (216000u32);
-        let mut rem = val % 216000u32;
-        let minutes: u32 = rem / 3600u32;
-        rem %= 3600u32;
-        let seconds: u32 = rem / 60u32;
-        rem %= 60u32;
-
-        let repr = format!("{:0>2}:{:0>2}:{:0>2}.{:0>2}", hours, minutes, seconds, rem);
-
-        Z3RTime { val, repr }
+        Z3RStat { value, repr }
     }
 }
 
