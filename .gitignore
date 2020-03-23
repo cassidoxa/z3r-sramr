@@ -1,3 +1,5 @@
 /target
 Cargo.lock
 **/*.srm
+**/*.so
+py/test.py

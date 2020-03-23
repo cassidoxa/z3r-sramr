@@ -13,7 +13,7 @@ name = "z3rsramr"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = "0.8.5"
+pyo3 = "0.9"
 z3r-sramr = { path = "../lib" }
 
 [features]
