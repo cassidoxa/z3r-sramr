@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
 use byteorder::{LittleEndian, ReadBytesExt};
-use std::{collections::HashMap, io::Cursor};
+use std::{collections::HashMap, fmt, io::Cursor};
 
 use crate::{bitmask, validate_sram};
 
@@ -33,6 +33,16 @@ impl Z3REquip {
                 }
             }
             Self::Number(n) => *n,
+        }
+    }
+}
+
+impl fmt::Display for Z3REquip {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Has(true) => write!(f, "True"),
+            Self::Has(false) => write!(f, "False"),
+            Self::Number(n) => write!(f, "{}", *n),
         }
     }
 }
