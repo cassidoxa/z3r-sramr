@@ -39,7 +39,7 @@ fn parse_sram<'a>(py: Python<'a>, sram: &'a [u8], validate: bool) -> PyResult<&'
 
     let meta_map_py = PyDict::new(py);
     meta_map_py.set_item(
-        "file name",
+        "filename",
         Z3RStatPy::from(stats_map.remove("filename").unwrap()),
     )?;
     meta_map_py.set_item(
