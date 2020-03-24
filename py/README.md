@@ -9,9 +9,12 @@
 `parse_sram(sram, validate_sram=true)`
 
 Accepts a bytes object and optional boolean argument. If you want to skip the SRAM validation
-checks, you can pass `False` as the second argument. Returns a flat dict of stats and general
-information gleaned from the SRAM as strings. Can raise a ParseException if one of the
-validation checks fail or another error occurs. See keys.txt for a list of all keys.
+checks, you can pass `False` as the second argument. Returns a dict with three
+sub dicts: `'meta'`, `'stats'`, and `'equipment'`. See keys.txt for a list of all
+keys.
+
+Can raise a ParseException if one of the validation checks fail or another error
+occurs.
 
 `validate_sram(sram)`
 
@@ -28,7 +31,7 @@ with open("example.srm", "rb") as f:
 
 sram_map = parse_sram(sram)
 
-print(f'Current Rupees: {sram_map['current rupees']}')
-print(f'Collection Rate: {sram_map['collection rate']}')
-print(f'Menu Time: {sram_map['menu time']}')
+print(f'Current Rupees: {sram_map['equipment']['current rupees']}')
+print(f'Collection Rate: {sram_map['stats']['collection rate']}')
+print(f'Menu Time: {sram_map['stats']['menu time']}')
 ```

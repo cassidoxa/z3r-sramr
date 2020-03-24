@@ -1,11 +1,20 @@
-MISC
-"current arrows"
-"current bombs"
-"current rupees"
+The Rust crate has two functions that return hashmaps: read_stats and
+read_equipment. 
+
+The python library's parse_sram function will return a dict
+with three sub-dicts: meta, stats, and equipment typed into an appropriate
+python type. Fractions and times will be a string, binary equipment such as
+the Fire Rod will be a boolean. Equipment such as swords will either be None
+or a string indicating which sword the player has. Simple numbers will be
+integers.
+
+Meta keys:
+
 "filename"
 "hash id"
-"magic"
 "permalink"
+
+Stats keys:
 
 LOCATIONS CHECKED
 "collection rate"
@@ -74,3 +83,60 @@ IMPORTANT STUFF
 "times fluted"
 "total time"
 "underworld mirrors"
+
+Equipment keys:
+
+"arrow upgrades"
+"blue boomerang"
+"blue pendant"
+"bomb upgrades"
+"bombos"
+"book"
+"boots"
+"bottle 1"
+"bottle 2"
+"bottle 3"
+"bottle 4"
+"bottles"
+"bow"
+"bug net"
+"byrna"
+"cape"
+"crystal 1"
+"crystal 2"
+"crystal 3"
+"crystal 4"
+"crystal 5"
+"crystal 6"
+"crystal 7"
+"current arrows"
+"current bombs"
+"current health"
+"current magic"
+"current rupees"
+"ether"
+"fire rod"
+"flippers"
+"flute"
+"gloves"
+"goal items"
+"green pendant"
+"hammer"
+"hookshot"
+"ice rod"
+"lamp"
+"magic consumption"
+"mail"
+"mirror"
+"moon pearl"
+"mushroom"
+"mushroom turned in"
+"powder"
+"quake"
+"red boomerang"
+"red pendant"
+"shield"
+"shovel"
+"silver arrows"
+"somaria"
+"sword"
