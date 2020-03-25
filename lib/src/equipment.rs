@@ -59,6 +59,7 @@ pub fn read_equipment(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3REq
     sram_equip.insert("current bombs", get_equipment(&mut cur, 0x343, 8, 0, false)?);
     sram_equip.insert("current health", get_equipment(&mut cur, 0x36D, 8, 0, false)?);
     sram_equip.insert("current magic", get_equipment(&mut cur, 0x36E, 8, 0, false)?);
+    sram_equip.insert("heart pieces", get_equipment(&mut cur, 0x36B, 8, 0, false)?);
     sram_equip.insert("magic consumption", get_equipment(&mut cur, 0x37B, 8, 0, false)?);
     sram_equip.insert("goal items", get_equipment(&mut cur, 0x418, 8, 0, false)?);
     sram_equip.insert("bomb upgrades", get_equipment(&mut cur, 0x370, 8, 0, false)?);
@@ -89,7 +90,10 @@ pub fn read_equipment(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3REq
     let bottle_2 = get_equipment(&mut cur, 0x35D, 8, 0, false)?;
     let bottle_3 = get_equipment(&mut cur, 0x35E, 8, 0, false)?;
     let bottle_4 = get_equipment(&mut cur, 0x35F, 8, 0, false)?;
-    let bottle_count: u32 = vec![bottle_1.value(), bottle_2.value(), bottle_3.value(), bottle_4.value()]
+    let bottle_count: u32 = vec![bottle_1.value(),
+                                 bottle_2.value(),
+                                 bottle_3.value(),
+                                 bottle_4.value()]
         .iter()
         .fold(0u32, |c, b| if *b != 0u32 {c + 1u32} else {c});
     sram_equip.insert("bottle 1", bottle_1);
@@ -102,11 +106,12 @@ pub fn read_equipment(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3REq
     let mushroom_past = get_equipment(&mut cur, 0x38C, 1, 3, true)?;
     let flute_inactive = get_equipment(&mut cur, 0x38C, 1, 1, true)?;
     let flute_active = get_equipment(&mut cur, 0x38C, 1, 0, true)?;
-    let bow = get_equipment(&mut cur, 0x38E, 1, 7, true)?;
-    let silver_bow = get_equipment(&mut cur, 0x38E, 1, 6, true)?;
-    let second_prog_bow = get_equipment(&mut cur, 0x38E, 1, 5, true)?;
-    sram_equip.insert("bow", Z3REquip::Has(bow.has() || silver_bow.has()));
-    sram_equip.insert("silver arrows", Z3REquip::Has(silver_bow.has() || second_prog_bow.has()));
+    let bow = get_equipment(&mut cur, 0x340, 8, 0, false)?;
+    let bow_inv = get_equipment(&mut cur, 0x38E, 1, 7, true)?;
+    let silver_bow_inv = get_equipment(&mut cur, 0x38E, 1, 6, true)?;
+    let second_prog_bow_inv = get_equipment(&mut cur, 0x38E, 1, 5, true)?;
+    sram_equip.insert("bow", Z3REquip::Has(bow_inv.has() || second_prog_bow_inv.has() || bow.has()));
+    sram_equip.insert("silver arrows", Z3REquip::Has(silver_bow_inv.has() || bow.value() == 0x03 || bow.value() == 0x04));
     sram_equip.insert("mushroom", Z3REquip::Has(mushroom_current.has() || mushroom_past.has()));
     sram_equip.insert("mushroom turned in", Z3REquip::Has(mushroom_past.has()));
     sram_equip.insert("flute", Z3REquip::Has(flute_inactive.has() || flute_active.has()));

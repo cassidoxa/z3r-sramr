@@ -106,8 +106,8 @@ pub fn read_stats(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3RStat>>
     sram_stats.insert("shields", get_stat(&mut cur, 0x422, 2, 3, Some(3))?);
     sram_stats.insert("mails", get_stat(&mut cur, 0x424, 2, 6, Some(3))?);
     sram_stats.insert("capacity upgrades", get_stat(&mut cur, 0x452, 4, 0, Some(15))?);
-    sram_stats.insert("heart pieces", get_stat(&mut cur, 0x448, 4, 0, Some(24))?);
     sram_stats.insert("heart containers", get_stat(&mut cur, 0x429, 4, 4, Some(11))?);
+    sram_stats.insert("heart pieces", get_stat(&mut cur, 0x448, 8, 0, Some(24))?);
     sram_stats.insert("maps", get_stat(&mut cur, 0x428, 4, 4, Some(12))?);
     sram_stats.insert("compasses", get_stat(&mut cur, 0x428, 4, 0, Some(11))?);
     sram_stats.insert("small keys", get_stat(&mut cur, 0x424, 6, 0, Some(61))?);
