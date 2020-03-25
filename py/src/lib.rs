@@ -117,14 +117,6 @@ fn get_equip_map<'a>(
         "bottle 4",
         equipment::map_bottle_contents(rs_map.remove("bottle 4").unwrap().value()),
     )?;
-    py_map.set_item(
-        "bomb upgrades",
-        equipment::map_upgrade(rs_map.remove("bomb upgrades").unwrap().value()),
-    )?;
-    py_map.set_item(
-        "arrow upgrades",
-        equipment::map_upgrade(rs_map.remove("arrow upgrades").unwrap().value()),
-    )?;
     for (k, v) in rs_map.drain() {
         py_map.set_item(k, Z3REquipPy::from(v))?;
     }

@@ -73,7 +73,6 @@ pub fn read_equipment(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3REq
     sram_equip.insert("hookshot", get_equipment(&mut cur, 0x342, 8, 0, true)?);
     sram_equip.insert("bug net", get_equipment(&mut cur, 0x34D, 8, 0, true)?);
     sram_equip.insert("book", get_equipment(&mut cur, 0x34E, 8, 0, true)?);
-    sram_equip.insert("bottles", get_equipment(&mut cur, 0x34F, 8, 0, false)?);
     sram_equip.insert("somaria", get_equipment(&mut cur, 0x350, 8, 0, true)?);
     sram_equip.insert("byrna", get_equipment(&mut cur, 0x351, 8, 0, true)?);
     sram_equip.insert("cape", get_equipment(&mut cur, 0x352, 8, 0, true)?);
@@ -85,10 +84,19 @@ pub fn read_equipment(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3REq
     sram_equip.insert("sword", get_equipment(&mut cur, 0x359, 8, 0, false)?);
     sram_equip.insert("shield", get_equipment(&mut cur, 0x35A, 8, 0, false)?);
     sram_equip.insert("mail", get_equipment(&mut cur, 0x35B, 8, 0, false)?);
-    sram_equip.insert("bottle 1", get_equipment(&mut cur, 0x35C, 8, 0, false)?);
-    sram_equip.insert("bottle 2", get_equipment(&mut cur, 0x35D, 8, 0, false)?);
-    sram_equip.insert("bottle 3", get_equipment(&mut cur, 0x35E, 8, 0, false)?);
-    sram_equip.insert("bottle 4", get_equipment(&mut cur, 0x35F, 8, 0, false)?);
+
+    let bottle_1 = get_equipment(&mut cur, 0x35C, 8, 0, false)?;
+    let bottle_2 = get_equipment(&mut cur, 0x35D, 8, 0, false)?;
+    let bottle_3 = get_equipment(&mut cur, 0x35E, 8, 0, false)?;
+    let bottle_4 = get_equipment(&mut cur, 0x35F, 8, 0, false)?;
+    let bottle_count: u32 = vec![bottle_1.value(), bottle_2.value(), bottle_3.value(), bottle_4.value()]
+        .iter()
+        .fold(0u32, |c, b| if *b != 0u32 {c + 1u32} else {c});
+    sram_equip.insert("bottle 1", bottle_1);
+    sram_equip.insert("bottle 2", bottle_2);
+    sram_equip.insert("bottle 3", bottle_3);
+    sram_equip.insert("bottle 4", bottle_4);
+    sram_equip.insert("bottles", Z3REquip::Number(bottle_count));
 
     let mushroom_current = get_equipment(&mut cur, 0x38C, 1, 5, true)?;
     let mushroom_past = get_equipment(&mut cur, 0x38C, 1, 3, true)?;
@@ -219,8 +227,4 @@ pub fn map_bottle_contents(v: u32) -> Option<String> {
         8 => Some("Good Bee".to_string()),
         _ => Some("Unknown Bottle".to_string()),
     }
-}
-
-pub fn map_upgrade(v: u32) -> u32 {
-    v / 5
 }
