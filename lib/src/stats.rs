@@ -130,10 +130,10 @@ pub fn read_stats(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3RStat>>
     sram_stats.insert("ganons tower", get_stat(&mut cur, 0x436, 5, 3, Some(27))?);
     sram_stats.insert("ganons tower big key", get_stat(&mut cur, 0x42A, 5, 0, Some(22))?);
     sram_stats.insert("swordless bosses", get_stat(&mut cur, 0x452, 4, 4, Some(13))?);
-    sram_stats.insert("fighter sword bosses", get_stat(&mut cur, 0x425, 4, 4, Some(13))?);
-    sram_stats.insert("master sword bosses", get_stat(&mut cur, 0x425, 4, 0, Some(13))?);
-    sram_stats.insert("tempered sword bosses", get_stat(&mut cur, 0x425, 4, 12, Some(13))?);
-    sram_stats.insert("golden sword bosses", get_stat(&mut cur, 0x425, 4, 8, Some(13))?);
+    sram_stats.insert("fighter sword bosses", get_stat(&mut cur, 0x426, 4, 4, Some(13))?);
+    sram_stats.insert("master sword bosses", get_stat(&mut cur, 0x426, 4, 0, Some(13))?);
+    sram_stats.insert("tempered sword bosses", get_stat(&mut cur, 0x425, 4, 4, Some(13))?);
+    sram_stats.insert("golden sword bosses", get_stat(&mut cur, 0x425, 4, 0, Some(13))?);
     sram_stats.insert("locations pre boots", get_stat(&mut cur, 0x432, 8, 0, None)?);
     sram_stats.insert("locations pre mirror", get_stat(&mut cur, 0x433, 8, 0, None)?);
     sram_stats.insert("bonks", get_stat(&mut cur, 0x420, 8, 0, None)?);
