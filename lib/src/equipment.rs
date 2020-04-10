@@ -131,6 +131,8 @@ pub fn read_equipment(sram: &[u8], validate: bool) -> Result<HashMap<&str, Z3REq
     sram_equip.insert("crystal 6", get_equipment(&mut cur, 0x37A, 1, 0, true)?);
     sram_equip.insert("crystal 7", get_equipment(&mut cur, 0x37A, 1, 3, true)?);
     
+    sram_equip.insert("follower", get_equipment(&mut cur, 0x3CC, 8, 0, false)?);
+    
     Ok(sram_equip)
 }
 
@@ -231,5 +233,21 @@ pub fn map_bottle_contents(v: u32) -> Option<String> {
         7 => Some("Bee".to_string()),
         8 => Some("Good Bee".to_string()),
         _ => Some("Unknown Bottle".to_string()),
+    }
+}
+
+pub fn map_follower(v: u32) -> Option<String> {
+    match v {
+        0 => None,
+        1 => Some("Princess Zelda".to_string()),
+        4 => Some("Old Man".to_string()),
+        6 => Some("Maiden".to_string()),
+        7 => Some("Frog".to_string()),
+        8 => Some("Dwarf".to_string()),
+        9 => Some("Locksmith".to_string()),
+        10 => Some("Kiki".to_string()),
+        12 => Some("Purple Chest".to_string()),
+        13 => Some("Big Bomb".to_string()),
+        _ => Some("Unknown Follower".to_string()),
     }
 }
